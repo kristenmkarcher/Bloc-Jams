@@ -175,12 +175,26 @@ var previousSong = function() {
 
  var $previousButton = $('.main-controls .previous');
  var $nextButton = $('.main-controls .next');
+ var $toggleBar = $('.main-controls .play-pause');
 
  $(document).ready(function() {
      setCurrentAlbum(albumPicasso);
      $previousButton.click(previousSong);
      $nextButton.click(nextSong);
+     $toggleBar.click(togglePlayFromPlayerBar);
  });
+
+ var togglePlayFromPlayerBar = function() {
+   if (currentSoundFile.isPaused()) {
+       getSongNumberCell(currentlyPlayingSongNumber).html(pauseButtonTemplate);
+       $('.main-controls .play-pause').html(playerBarPauseButton);
+       currentSoundFile.play();
+   } else {
+       $('.main-controls .play-pause').html(playerBarPlayButton);
+       getSongNumberCell(currentlyPlayingSongNumber).html(playButtonTemplate);
+       currentSoundFile.pause();
+   }
+ };
 
   var albums = [albumPicasso, albumMarconi, albumMuse];
   var index = 1;
