@@ -44,6 +44,7 @@ var filterTimeCode = function(timeInSeconds){
   if(seconds < 10){
     seconds = "0" + seconds;
   }
+
   return minutes + ":" + seconds;
 };
 
@@ -166,15 +167,16 @@ var setupSeekBars = function() {
         var offsetX = event.pageX - $(this).offset().left;
         var barWidth = $(this).width();
         var seekBarFillRatio = offsetX / barWidth;
+        if(currentSoundFile){
+          if ($(this).parent().attr('class') == 'seek-control') {
+              seek(seekBarFillRatio * currentSoundFile.getDuration());
+          }
+          else {
+              setVolume(seekBarFillRatio * 100);
+          }
 
-        if ($(this).parent().attr('class') == 'seek-control') {
-            seek(seekBarFillRatio * currentSoundFile.getDuration());
+          updateSeekPercentage($(this), seekBarFillRatio);
         }
-        else {
-            setVolume(seekBarFillRatio * 100);
-        }
-
-        updateSeekPercentage($(this), seekBarFillRatio);
     });
 
     $seekBars.find('.thumb').mousedown(function(event) {
@@ -184,14 +186,15 @@ var setupSeekBars = function() {
             var offsetX = event.pageX - $seekBar.offset().left;
             var barWidth = $seekBar.width();
             var seekBarFillRatio = offsetX / barWidth;
+            if(currentSoundFile){
+              if ($seekBar.parent().attr('class') == 'seek-control') {
+                  seek(seekBarFillRatio * currentSoundFile.getDuration());
+              }
+              else {
+                  setVolume(seekBarFillRatio);
 
-            if ($seekBar.parent().attr('class') == 'seek-control') {
-                seek(seekBarFillRatio * currentSoundFile.getDuration());
-            }
-            else {
-                setVolume(seekBarFillRatio);
-
-                updateSeekPercentage($seekBar, seekBarFillRatio);
+                  updateSeekPercentage($seekBar, seekBarFillRatio);
+              }
             }
         });
 
@@ -264,17 +267,18 @@ var previousSong = function() {
 
 var togglePlayFromPlayerBar = function() {
    var songNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
-
-    if (currentSoundFile.isPaused()) {
-        songNumberCell.html(pauseButtonTemplate);
-        $('.main-controls .play-pause').html(playerBarPauseButton);
-        currentSoundFile.play();
-    }
-    else {
-        songNumberCell.html(playButtonTemplate);
-        $('.main-controls .play-pause').html(playerBarPlayButton);
-        currentSoundFile.pause();
-    }
+   if(currentSoundFile){
+     if (currentSoundFile.isPaused()) {
+         songNumberCell.html(pauseButtonTemplate);
+         $('.main-controls .play-pause').html(playerBarPauseButton);
+         currentSoundFile.play();
+     }
+     else {
+         songNumberCell.html(playButtonTemplate);
+         $('.main-controls .play-pause').html(playerBarPlayButton);
+         currentSoundFile.pause();
+     }
+   }
 };
 
  // Album Button Templates
